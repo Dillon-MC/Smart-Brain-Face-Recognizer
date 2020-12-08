@@ -1,0 +1,12 @@
+.form {
+    width: 700px;
+    background-color:#2B00FF;
+    background-image: linear-gradient(30deg, #2B00FF 12%, transparent 12.5%, transparent 87%, #2B00FF 87.5%, #2B00FF),
+    linear-gradient(150deg, #2B00FF 12%, transparent 12.5%, transparent 87%, #2B00FF 87.5%, #2B00FF),
+    linear-gradient(30deg, #2B00FF 12%, transparent 12.5%, transparent 87%, #2B00FF 87.5%, #2B00FF),
+    linear-gradient(150deg, #2B00FF 12%, transparent 12.5%, transparent 87%, #2B00FF 87.5%, #2B00FF),
+    linear-gradient(60deg,#A1F7E6 25%, transparent 25.5%, transparent 75%, #A1F7E6 75%, #A1F7E6),
+    linear-gradient(60deg,#A1F7E6 25%, transparent 25.5%, transparent 75%, #A1F7E6 75%, #A1F7E6);
+    background-size:80px 140px;
+    background-position: 0 0, 0 0, 40px 70px, 40px 70px, 0 0, 40px 70px;
+}
