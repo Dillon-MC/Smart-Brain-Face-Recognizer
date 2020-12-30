@@ -52,7 +52,8 @@ class App extends Component {
       email: data.email,
       password: data.password,
       entries: data.entries,
-      joined: data.joined
+      joined: data.joined,
+      error: ''
     }})
 }
 
@@ -87,32 +88,40 @@ class App extends Component {
   }
 
   onImageSubmit = () => {
-    this.setState({imageUrl: this.state.input});
-    fetch('https://rocky-coast-32021.herokuapp.com/imageurl', {
-        method: 'post',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({
-          input: this.state.input
+    if (this.state.input !== '') {
+      this.setState({imageUrl: this.state.input});
+      fetch('https://rocky-coast-32021.herokuapp.com/imageurl', {
+          method: 'post',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({
+            input: this.state.input
+          })
         })
-      })
-      .then(response => response.json())
-      .then (response => {
-        if(response) {
-          fetch('https://rocky-coast-32021.herokuapp.com/image', {
-            method: 'put',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({
-              id: this.state.user.id
-            })
-          })
-          .then(response => response.json())
-          .then(count => {
-            this.setState(Object.assign(this.state.user, {entries: count}));
-          })
-        }
-         return this.displayFaceBox(this.calculateFaceLocation(response))
-      })
-      .catch(err => console.log('uhoh', err));
+        .then(response => response.json())
+        .then (response => {
+          if(response) {
+              if(response !== 'unable to work with api') {
+              fetch('https://rocky-coast-32021.herokuapp.com/image', {
+                method: 'put',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                  id: this.state.user.id
+                })
+              })
+              .then(response => response.json())
+              .then(count => {
+                  this.setState(Object.assign(this.state.user, {entries: count}));
+              })
+            } else {
+              this.setState({error: "Please input a valid image URL!"});
+            }
+          }
+          return this.displayFaceBox(this.calculateFaceLocation(response))
+        })
+        .catch(err => console.log('uhoh', err));
+    } else {
+      this.setState({error: "No link provided!"});
+    }
   }
 
   onRouteChange = (route) => {
@@ -141,6 +150,7 @@ class App extends Component {
           ? <div>
               <Logo />
               <Rank name={this.state.user.name} entries={this.state.user.entries}/>
+              <h3>{this.state.error}</h3>
               <ImageLinkForm 
                 onInputChange={this.onInputChange} 
                 onImageSubmit={this.onImageSubmit} />
