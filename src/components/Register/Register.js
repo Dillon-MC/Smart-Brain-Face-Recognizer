@@ -33,7 +33,7 @@ class Register extends React.Component {
 
     onSubmitRegister = () => {
         const { password, email, name } = this.state;
-        let promise = new Promise((resolve, reject) => {
+        new Promise((resolve, reject) => {
             setTimeout(() => {        
                 let result = {
                     password: {fail: false, color: 'bg-white'},
@@ -86,7 +86,8 @@ class Register extends React.Component {
                 }
             },40);
         }).then(() => {
-            fetch('https://rocky-coast-32021.herokuapp.com/register', {
+            // !!! USE FOR PRODUCTION https://rocky-coast-32021.herokuapp.com/register !!!
+            fetch('http://localhost:3000/register', {
                 method: 'post',
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify({

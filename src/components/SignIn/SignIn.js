@@ -1,4 +1,5 @@
 import React from 'react';
+import './Signin.css';
 
 class SiginIn extends React.Component {
     constructor(props) {
@@ -18,8 +19,13 @@ class SiginIn extends React.Component {
         this.setState({signInPassword: event.target.value});
     }
 
+    saveAuthTokenInSessions = (token) => {
+        window.sessionStorage.setItem('token', token);
+    }
+
     onSubmitSignIn = () => {
-        fetch('https://rocky-coast-32021.herokuapp.com/signin', {
+        // !!! USE FOR PRODUCTION https://rocky-coast-32021.herokuapp.com/signin !!!
+        fetch('http://localhost:3000/signin', {
             method: 'post',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({
@@ -28,11 +34,24 @@ class SiginIn extends React.Component {
             })
         })
         .then(response => response.json())
-        .then(user => {
-            if(user.id) {
+        .then(data => {
+            if(data.userId && data.success === 'true') {
+                this.saveAuthTokenInSessions(data.token);
                 this.setState({signInError: '', inputFieldColor: 'bg-white'});
-                this.props.loadUser(user);
-                this.props.onRouteChange('home');
+                fetch(`http://localhost:3000/profile/${data.userId}`, {
+                    method: 'get',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + data.token
+                    }
+                })
+                .then(resp => resp.json())
+                .then(user => {
+                    if(user && user.email) {
+                        this.props.loadUser(user);
+                        this.props.onRouteChange('home');
+                    }
+                })
             } else {
                 this.setState({signInError: 'Incorrect email or password!', inputFieldColor: 'bg-washed-red'});
             }
@@ -48,11 +67,11 @@ class SiginIn extends React.Component {
                 <div className="measure">
                     <fieldset id="sign_up" className="ba b--transparent ph0 mh0">
                         <legend className="f1 fw6 ph0 mh0">Sign In</legend>
-                        <h4 className='red'>{this.state.signInError}</h4>
+                        <h4 className='red width250'>{this.state.signInError}</h4>
                         <div className="mt3">
                             <label className="db fw6 lh-copy f6" htmlFor="email-address">Email</label>
                             <input
-                             className={`b pa2 input-reset ba ${inputFieldColor} hover-bg-black hover-white w-100`}
+                              className={`width250 b pa2 input-reset ba ${inputFieldColor} hover-bg-black hover-white w-100 hover-black`}
                               type="email" 
                               name="email-address"  
                               id="email-address"
@@ -61,7 +80,7 @@ class SiginIn extends React.Component {
                         <div className="mv3">
                             <label className="db fw6 lh-copy f6" htmlFor="password">Password</label>
                             <input 
-                            className={`b pa2 input-reset ba ${inputFieldColor} hover-bg-black hover-white w-100`}
+                            className={`width250 b pa2 input-reset ba ${inputFieldColor} hover-bg-black hover-white w-100 hover-black`}
                             type="password" 
                             name="password"  
                             id="password"
@@ -72,7 +91,7 @@ class SiginIn extends React.Component {
                     <div className="">
                         <input 
                             onClick={this.onSubmitSignIn}
-                            className="b ph3 pv2 input-reset ba b--black bg-transparent grow pointer f6 dib" 
+                            className="b ph3 pv2 input-reset ba b--black bg-transparent grow pointer f6 dib hover-black" 
                             type="submit"
                             value="Sign in"/>
                     </div>
