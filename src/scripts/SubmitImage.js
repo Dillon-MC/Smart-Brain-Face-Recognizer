@@ -1,6 +1,6 @@
 export const tryToSubmitImage = (url) => {
     // !!! USE FOR PRODUCTION https://rocky-coast-32021.herokuapp.com/imageurl !!!
-    return fetch('http://localhost:3000/imageurl', {
+    return fetch(`${process.env.REACT_APP_API_SERVER_URL}/imageurl`, {
         method: 'post',
         headers: {
           'Content-Type': 'application/json',
@@ -26,7 +26,7 @@ export const tryToSubmitImage = (url) => {
 
 export const updateUserEntries = (userId) => {
     // !!! USE FOR PRODUCTION https://rocky-coast-32021.herokuapp.com/image !!!
-    return fetch('http://localhost:3000/image', {
+    return fetch(`${process.env.REACT_APP_API_SERVER_URL}/image`, {
         method: 'put',
         headers: {
             'Content-Type': 'application/json',

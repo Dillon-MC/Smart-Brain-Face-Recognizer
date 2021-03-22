@@ -1,5 +1,5 @@
 export const signOut = (onRouteChange) => {
-    fetch("http://localhost:3000/signout", {
+    fetch(`${process.env.REACT_APP_API_SERVER_URL}/signout`, {
         method: 'post',
         headers: {
             'Content-Type': 'application/json',

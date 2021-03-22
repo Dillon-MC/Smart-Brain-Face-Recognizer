@@ -31,6 +31,10 @@ class Register extends React.Component {
         this.setState({password: event.target.value.trim()});
     }
 
+    saveAuthTokenInSessions = (token) => {
+        window.sessionStorage.setItem('token', token);
+    }
+
     onSubmitRegister = () => {
         const { password, email, name } = this.state;
         new Promise((resolve, reject) => {
@@ -87,7 +91,7 @@ class Register extends React.Component {
             },40);
         }).then(() => {
             // !!! USE FOR PRODUCTION https://rocky-coast-32021.herokuapp.com/register !!!
-            fetch('http://localhost:3000/register', {
+            fetch(`${process.env.REACT_APP_API_SERVER_URL}/register`, {
                 method: 'post',
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify({
@@ -97,13 +101,14 @@ class Register extends React.Component {
                 })
             })
             .then(response => response.json())
-            .then(user => {
-                if(user.id) {
-                    this.props.loadUser(user);
+            .then(data => {
+                if(data.user.id) {
+                    this.saveAuthTokenInSessions(data.session.token);
+                    this.props.loadUser(data.user);
                     this.props.onRouteChange('home');
                 } else {
-                    this.setState({errorEmail: 'Email already exist!'});
-                    throw 'Email already exist!';
+                    this.setState({errorName: 'Unable to register'});
+                    throw 'Unable to register';
                 }
             }).catch(error => console.log('error registering: ', error));
         }).catch(error => console.log(error));

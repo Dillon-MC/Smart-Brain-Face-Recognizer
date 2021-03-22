@@ -24,8 +24,7 @@ class SiginIn extends React.Component {
     }
 
     onSubmitSignIn = () => {
-        // !!! USE FOR PRODUCTION https://rocky-coast-32021.herokuapp.com/signin !!!
-        fetch('http://localhost:3000/signin', {
+        fetch(`${process.env.REACT_APP_API_SERVER_URL}/signin`, {
             method: 'post',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({
@@ -38,7 +37,7 @@ class SiginIn extends React.Component {
             if(data.userId && data.success === 'true') {
                 this.saveAuthTokenInSessions(data.token);
                 this.setState({signInError: '', inputFieldColor: 'bg-white'});
-                fetch(`http://localhost:3000/profile/${data.userId}`, {
+                fetch(`${process.env.REACT_APP_API_SERVER_URL}/profile/${data.userId}`, {
                     method: 'get',
                     headers: {
                         'Content-Type': 'application/json',
